@@ -46,6 +46,10 @@ function drawPdmChart(points) {
   const scaleX = (value) => padding + ((value - minX) / (maxX - minX || 1)) * (width - padding * 2);
   const scaleY = (value) => height - padding - ((value - minY) / (maxY - minY || 1)) * (height - padding * 2);
 
+  const lineYEqualsX = `
+    <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${padding}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" />
+  `;
+
   const axes = `
     <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
     <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
@@ -61,7 +65,7 @@ function drawPdmChart(points) {
     })
     .join('');
 
-  chart.innerHTML = `${axes}${pointMarkup}`;
+  chart.innerHTML = `${lineYEqualsX}${axes}${pointMarkup}`;
 }
 
 pdmButton.addEventListener('click', async () => {
