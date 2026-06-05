@@ -98,7 +98,9 @@ pdmButton.addEventListener('click', async () => {
     let text = PDM_DATA_FALLBACK;
 
     try {
-      const response = await fetch('PDM_Data.txt');
+      const response = await fetch(`PDM_Data.txt?cacheBust=${Date.now()}`, {
+        cache: 'no-store',
+      });
       if (!response.ok) {
         throw new Error('Unable to load data file.');
       }
