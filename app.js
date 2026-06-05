@@ -4,10 +4,32 @@ const message = document.getElementById('message');
 const chart = document.getElementById('chart');
 const chartStatus = document.getElementById('chartStatus');
 
+const PDM_DATA_FALLBACK = `date,fraction_time_elapsed,fraction_PDM_spent
+2025-11-26,0.1554,0.0992
+2026-02-09,0.3494,0.2541
+2026-02-24,0.3894,0.2843
+2026-05-27,0.6508,0.6838`;
+
 button.addEventListener('click', () => {
   const timeOfDay = new Date().getHours() < 12 ? 'morning' : 'afternoon';
   message.textContent = `Good ${timeOfDay} Tim! You are ready to learn GitHub and Codex.`;
 });
+
+function parsePdmData(text) {
+  return text
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .slice(1)
+    .map((line) => {
+      const [date, fractionElapsed, fractionSpent] = line.split(',');
+      return {
+        date,
+        x: Number(fractionElapsed),
+        y: Number(fractionSpent),
+      };
+    });
+}
 
 function drawPdmChart(points) {
   const width = 420;
@@ -44,31 +66,28 @@ function drawPdmChart(points) {
 
 pdmButton.addEventListener('click', async () => {
   try {
-    const response = await fetch('PDM_Data.txt');
-    if (!response.ok) {
-      throw new Error('Unable to load data file.');
+    let text = PDM_DATA_FALLBACK;
+
+    try {
+      const response = await fetch('PDM_Data.txt');
+      if (!response.ok) {
+        throw new Error('Unable to load data file.');
+      }
+      text = await response.text();
+    } catch (fetchError) {
+      console.warn('Falling back to built-in PDM data.', fetchError);
     }
 
-    const text = await response.text();
-    const lines = text
-      .trim()
-      .split(/\r?\n/)
-      .filter(Boolean)
-      .slice(1);
+    const points = parsePdmData(text);
 
-    const points = lines.map((line) => {
-      const [date, fractionElapsed, fractionSpent] = line.split(',');
-      return {
-        date,
-        x: Number(fractionElapsed),
-        y: Number(fractionSpent),
-      };
-    });
+    if (!points.length) {
+      throw new Error('No PDM data points were found.');
+    }
 
     drawPdmChart(points);
     chartStatus.textContent = `Chart updated with ${points.length} PDM data points.`;
   } catch (error) {
-    chartStatus.textContent = 'Could not load PDM_Data.txt. Run the app with a local server.';
+    chartStatus.textContent = 'Could not load PDM data. Please check the data file or try again.';
     console.error(error);
   }
 });
