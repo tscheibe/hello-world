@@ -34,7 +34,7 @@ function parsePdmData(text) {
 function drawPdmChart(points) {
   const width = 420;
   const height = 280;
-  const padding = 50;
+  const padding = 36;
 
   const xValues = points.map((point) => point.x);
   const yValues = points.map((point) => point.y);
@@ -64,7 +64,7 @@ function drawPdmChart(points) {
     const y = scaleY(value);
     return `
       <line x1="${padding - 6}" y1="${y}" x2="${padding}" y2="${y}" stroke="#64748b" stroke-width="1" />
-      <text x="${padding - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
+      <text x="${padding - 10}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
     `;
   }).join('');
 
@@ -76,7 +76,7 @@ function drawPdmChart(points) {
     <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
     <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
     <text x="${width / 2}" y="${height - 8}" text-anchor="middle" font-size="11" fill="#475569">Percent of fiscal year elapsed</text>
-    <text x="1" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 -2 ${height / 2})">Percent of total PDM spent</text>
+    <text x="-2" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 -2 ${height / 2})">Percent of total PDM spent</text>
   `;
 
   const pointMarkup = points
