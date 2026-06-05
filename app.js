@@ -76,7 +76,7 @@ function drawPdmChart(points) {
     <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
     <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
     <text x="${width / 2}" y="${height - 8}" text-anchor="middle" font-size="11" fill="#475569">Percent of fiscal year elapsed</text>
-    <text x="-2" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 -2 ${height / 2})">Percent of total PDM spent</text>
+    <text x="1" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 -2 ${height / 2})">Percent of total PDM spent</text>
   `;
 
   const pointMarkup = points
