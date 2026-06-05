@@ -38,13 +38,35 @@ function drawPdmChart(points) {
 
   const xValues = points.map((point) => point.x);
   const yValues = points.map((point) => point.y);
-  const minX = Math.min(0, ...xValues);
+  const minX = 0;
   const maxX = Math.max(1, ...xValues);
-  const minY = Math.min(0, ...yValues);
+  const minY = 0;
   const maxY = Math.max(1, ...yValues);
 
   const scaleX = (value) => padding + ((value - minX) / (maxX - minX || 1)) * (width - padding * 2);
   const scaleY = (value) => height - padding - ((value - minY) / (maxY - minY || 1)) * (height - padding * 2);
+
+  const tickStep = 0.2;
+  const tickCountX = Math.ceil(maxX / tickStep);
+  const tickCountY = Math.ceil(maxY / tickStep);
+
+  const tickMarkup = Array.from({ length: tickCountX + 1 }, (_, index) => {
+    const value = index * tickStep;
+    const x = scaleX(value);
+    return `
+      <line x1="${x}" y1="${height - padding}" x2="${x}" y2="${height - padding + 6}" stroke="#64748b" stroke-width="1" />
+      <text x="${x}" y="${height - 18}" text-anchor="middle" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
+    `;
+  }).join('');
+
+  const tickMarkupY = Array.from({ length: tickCountY + 1 }, (_, index) => {
+    const value = index * tickStep;
+    const y = scaleY(value);
+    return `
+      <line x1="${padding - 6}" y1="${y}" x2="${padding}" y2="${y}" stroke="#64748b" stroke-width="1" />
+      <text x="${padding - 10}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
+    `;
+  }).join('');
 
   const lineYEqualsX = `
     <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${padding}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" />
@@ -53,8 +75,8 @@ function drawPdmChart(points) {
   const axes = `
     <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
     <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
-    <text x="${width / 2}" y="${height - 8}" text-anchor="middle" font-size="11" fill="#475569">Fraction of fiscal year elapsed</text>
-    <text x="18" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 18 ${height / 2})">Fraction of total PDM spent</text>
+    <text x="${width / 2}" y="${height - 8}" text-anchor="middle" font-size="11" fill="#475569">Percent of fiscal year elapsed</text>
+    <text x="-2" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 -2 ${height / 2})">Percent of total PDM spent</text>
   `;
 
   const pointMarkup = points
@@ -65,7 +87,7 @@ function drawPdmChart(points) {
     })
     .join('');
 
-  chart.innerHTML = `${lineYEqualsX}${axes}${pointMarkup}`;
+  chart.innerHTML = `${lineYEqualsX}${tickMarkup}${tickMarkupY}${axes}${pointMarkup}`;
 }
 
 pdmButton.addEventListener('click', async () => {
