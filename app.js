@@ -98,15 +98,26 @@ pdmButton.addEventListener('click', async () => {
     let text = PDM_DATA_FALLBACK;
 
     try {
-      const response = await fetch(`PDM_Data.txt?cacheBust=${Date.now()}`, {
+      const githubUrl = 'https://raw.githubusercontent.com/tscheibe/hello-world/master/PDM_Data.txt';
+      const response = await fetch(`${githubUrl}?cacheBust=${Date.now()}`, {
         cache: 'no-store',
       });
       if (!response.ok) {
-        throw new Error('Unable to load data file.');
+        throw new Error('Unable to load GitHub data file.');
       }
       text = await response.text();
-    } catch (fetchError) {
-      console.warn('Falling back to built-in PDM data.', fetchError);
+    } catch (githubError) {
+      try {
+        const response = await fetch(`PDM_Data.txt?cacheBust=${Date.now()}`, {
+          cache: 'no-store',
+        });
+        if (!response.ok) {
+          throw new Error('Unable to load local data file.');
+        }
+        text = await response.text();
+      } catch (localError) {
+        console.warn('Falling back to built-in PDM data.', githubError, localError);
+      }
     }
 
     const points = parsePdmData(text);
