@@ -34,7 +34,7 @@ function parsePdmData(text) {
 function drawPdmChart(points) {
   const width = 420;
   const height = 280;
-  const padding = 36;
+  const padding = 50;
 
   const xValues = points.map((point) => point.x);
   const yValues = points.map((point) => point.y);
