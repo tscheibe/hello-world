@@ -64,7 +64,7 @@ function drawPdmChart(points) {
     const y = scaleY(value);
     return `
       <line x1="${padding - 6}" y1="${y}" x2="${padding}" y2="${y}" stroke="#64748b" stroke-width="1" />
-      <text x="${padding - 10}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
+      <text x="${padding - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
     `;
   }).join('');
 
