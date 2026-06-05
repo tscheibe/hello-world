@@ -32,9 +32,12 @@ function parsePdmData(text) {
 }
 
 function drawPdmChart(points) {
-  const width = 420;
+  const width = 460;
   const height = 280;
-  const padding = 36;
+  const leftPadding = 56;
+  const rightPadding = 30;
+  const bottomPadding = 36;
+  const topPadding = 18;
 
   const xValues = points.map((point) => point.x);
   const yValues = points.map((point) => point.y);
@@ -43,8 +46,8 @@ function drawPdmChart(points) {
   const minY = 0;
   const maxY = Math.max(1, ...yValues);
 
-  const scaleX = (value) => padding + ((value - minX) / (maxX - minX || 1)) * (width - padding * 2);
-  const scaleY = (value) => height - padding - ((value - minY) / (maxY - minY || 1)) * (height - padding * 2);
+  const scaleX = (value) => leftPadding + ((value - minX) / (maxX - minX || 1)) * (width - leftPadding - rightPadding);
+  const scaleY = (value) => height - bottomPadding - ((value - minY) / (maxY - minY || 1)) * (height - topPadding - bottomPadding);
 
   const tickStep = 0.2;
   const tickCountX = Math.ceil(maxX / tickStep);
@@ -54,7 +57,7 @@ function drawPdmChart(points) {
     const value = index * tickStep;
     const x = scaleX(value);
     return `
-      <line x1="${x}" y1="${height - padding}" x2="${x}" y2="${height - padding + 6}" stroke="#64748b" stroke-width="1" />
+      <line x1="${x}" y1="${height - bottomPadding}" x2="${x}" y2="${height - bottomPadding + 6}" stroke="#64748b" stroke-width="1" />
       <text x="${x}" y="${height - 18}" text-anchor="middle" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
     `;
   }).join('');
@@ -63,20 +66,20 @@ function drawPdmChart(points) {
     const value = index * tickStep;
     const y = scaleY(value);
     return `
-      <line x1="${padding - 6}" y1="${y}" x2="${padding}" y2="${y}" stroke="#64748b" stroke-width="1" />
-      <text x="${padding - 10}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
+      <line x1="${leftPadding - 6}" y1="${y}" x2="${leftPadding}" y2="${y}" stroke="#64748b" stroke-width="1" />
+      <text x="${leftPadding - 10}" y="${y + 4}" text-anchor="end" font-size="10" fill="#475569">${Math.round(value * 100)}%</text>
     `;
   }).join('');
 
   const lineYEqualsX = `
-    <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${padding}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" />
+    <line x1="${leftPadding}" y1="${height - bottomPadding}" x2="${width - rightPadding}" y2="${topPadding}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" />
   `;
 
   const axes = `
-    <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
-    <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#1e293b" stroke-width="2" />
+    <line x1="${leftPadding}" y1="${height - bottomPadding}" x2="${width - rightPadding}" y2="${height - bottomPadding}" stroke="#1e293b" stroke-width="2" />
+    <line x1="${leftPadding}" y1="${topPadding}" x2="${leftPadding}" y2="${height - bottomPadding}" stroke="#1e293b" stroke-width="2" />
     <text x="${width / 2}" y="${height - 8}" text-anchor="middle" font-size="11" fill="#475569">Percent of fiscal year elapsed</text>
-    <text x="-2" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 -2 ${height / 2})">Percent of total PDM spent</text>
+    <text x="18" y="${height / 2}" text-anchor="middle" font-size="11" fill="#475569" transform="rotate(-90 18 ${height / 2})">Percent of total PDM spent</text>
   `;
 
   const pointMarkup = points
