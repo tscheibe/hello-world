@@ -21,3 +21,4 @@ date,fraction_time_elapsed,fraction_PDM_spent
 2026-05-27,0.6508,0.6838
 
 
+2026-09-30,1.0000,1.0000
